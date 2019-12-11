@@ -34,19 +34,21 @@ int arrayswap(int *array,int arraysize){
   return *arraytemp;
 }
 
-void filter(int *arrayx, int *arraya, int *arrayb, int *arrayY, int *arrayF, int *arrayA, int sizeofarr)
-{
+void filter(int *arrayx, int *arraya, int *arrayb, int *arrayY, int *arrayF, int *arrayA, int sizeofarr) //Use only needed input
+{   
+    //Send needed N step to be printed on inputs of function -/- make it more universal
+    //Move middle-step inside the function
     int Y=0;
     int F=0;
     int r;
     int e;
-
+    //Add bool for choise will we use values x(-1)
     for (r=0; r<sizeofarr; r++) {
         for (e=0; e<=r; e++) {
-            Y+=arraya[e]*arrayx[r-e];
+            Y+=arraya[e]*arrayx[r-e]; //add 0-values as : a_0+arraya[e]*arrayx[r-e]
             printf("%i*%i + ",arraya[e],arrayx[r-e]);
             if (r-e-1 >= 0) {
-                F+=arrayb[e]*arrayA[r-e-1];
+                F+=arrayb[e]*arrayA[r-e-1];//add 0-values just as : b_0+arrayb[e]*arrayA[r-e-1]
                 printf("%i*%i + ",arrayb[e],arrayA[r-e-1]);
                 }
             if (r-e-1 < 0) {
@@ -62,11 +64,12 @@ void filter(int *arrayx, int *arraya, int *arrayb, int *arrayY, int *arrayF, int
         F=0;
     }
 printf("output : [%i] [%i] [%i] [%i] [%i] [%i] [%i] [%i] [%i] [%i] \n",arrayA[0],arrayA[1],arrayA[2],arrayA[3],arrayA[4],arrayA[5],arrayA[6],arrayA[7],arrayA[8],arrayA[9]);
+//Print only needed (N) value output of filter
 }
 
 
 int main(int argc, const char * argv[]) {
-    int arrayx[10]={1,4,3,5,6};
+    int arrayx[10]={1,4,3,5,6}; //send size of array to func
     int arraya[10]={1,3,-2,4};
     int arrayb[10]={4,-2,3};
     int arrayY[10];
@@ -82,7 +85,7 @@ int main(int argc, const char * argv[]) {
     printf("Enter BeginV size!\n");
     BeginVsize=inputarraysize();
 
-    int BeginV[BeginVsize];
+    int BeginV[BeginVsize]; //This array should be size of (a-1) cuz we use all of the a values for 0-values
     
     printf("Enter BeginV values!\n");
     inputarray(BeginV, BeginVsize);
