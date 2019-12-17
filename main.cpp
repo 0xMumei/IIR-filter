@@ -12,14 +12,16 @@ int inputarray(int *array, int arraysize){
   return 1;
 };
 
-void inputBV(int *array, int arraysize){
+int inputBV(int *array, int arraysize){
     int TypeN;
     if(scanf("%i",&TypeN) == 1){
       if (TypeN == 1){
       printf("Enter numbers of the array:\n");
       inputarray(array, arraysize);
+      return 0;
       }else{
         std::fill(array, array+arraysize, 0);
+        return 1;
       }
     }else{
       throw std::invalid_argument("Input is not an integer");
@@ -48,7 +50,7 @@ int arrayswap(int *array,int arraysize){
   return *arraytemp;
 }
 
-void filter(int *arrayx, int xsize , int *arraya, int asize, int *arrayb, int bsize, int sizeofarr, int N, int *BV_A, int BV_Asize, int *BV_B, int BV_Bsize)
+void filter(int *arrayx, int xsize , int *arraya, int asize, int *arrayb, int bsize, int N)
 {   
     //Send needed N step to be printed on inputs of function -/- make it more universal
     //Move middle-step inside the function
@@ -59,9 +61,30 @@ void filter(int *arrayx, int xsize , int *arraya, int asize, int *arrayb, int bs
     int F=0;
     int r;
     int e;
+    //BeginValues and Flags
+    int BV_Asize=asize-1;
+    int BV_Bsize=bsize-1;
+    int BV_A[BV_Asize]; //This array should be size of (a-1) cuz we use all of the a values for 0-values
+    int BV_B[BV_Bsize];
+    int ENDX, BV_AC , BV_BC;
+
+    printf("Enter values of BV_A?\n");
+    BV_AC=inputBV(BV_A,BV_Asize);
+
+    printf("Enter values of BV_B?\n");
+    BV_BC=inputBV(BV_B,BV_Bsize);
+
+    printf("Enter endvalue: ");
+        if(scanf("%i",&ENDX) == 1){
+    }
+    else{
+        throw std::invalid_argument("Input is not an integer"); 
+    }
+    
+
     //Add bool for choise will we use values x(-1)
     for (r=0; r<N+1; r++) {
-        if (N+1>xsize){
+        if (N+1>xsize && (BV_AC != 1 || BV_BC != 1)){
           throw std::runtime_error("Stepsize >> arrayx");
         }
         for (e=0; e<=r; e++) {
@@ -72,11 +95,11 @@ void filter(int *arrayx, int xsize , int *arraya, int asize, int *arrayb, int bs
                 //printf("%i*%i + ",arrayb[e],arrayA[r-e-1]);
                 }
             if (r-e-1 < 0) {
-                F+=arrayb[e]*0;
+                F+=arrayb[e]*0 + BV_A[e];
                 //printf("%i*0 + ",arrayb[e]);
             }
         }
-        arrayY[r]=Y;
+        arrayY[r]=Y+ENDX;
         arrayF[r]=F;
         Output[r]=arrayY[r]+arrayF[r];
         //printf(" = %i\n",arrayA[r]);
@@ -102,19 +125,6 @@ int main(int argc, const char * argv[]) {
     
     printf("While answering the questions answer 1 if yes and 0 if no\n");
 
-
-    int BV_Asize=sizeof(arraya)/sizeof(int)-1;
-    int BV_Bsize=sizeof(arrayb)/sizeof(int)-1;
-    int BV_A[BV_Asize]; //This array should be size of (a-1) cuz we use all of the a values for 0-values
-    int BV_B[BV_Bsize];
-    int ENDX;
-    
-    printf("Enter values of BV_A?\n");
-    inputBV(BV_A,BV_Asize);
-
-    printf("Enter values of BV_B?\n");
-    inputBV(BV_B,BV_Bsize);
-
     if (sizeof(arrayx) < sizeof(arraya) + 1) {
     printf("Array X < Array A + 1, fill left with 0's?\n");
     scanf("%i", &TypeN);
@@ -137,7 +147,7 @@ int main(int argc, const char * argv[]) {
     }
     }//fill rest of the arrayx with 0's
 
-    printf("Enter step you want to see:");
+    printf("Enter step you want to see: ");
     if(scanf("%i",&N) == 1){
     }
     else{
@@ -145,7 +155,7 @@ int main(int argc, const char * argv[]) {
     }
     
 
-    filter(arrayx, xsize, arraya, asize, arrayb, bsize, sizeof(arraya)/sizeof(int), N, BV_A, BV_Asize, BV_B, BV_Bsize);
+    filter(arrayx, xsize, arraya, asize, arrayb, bsize, N);
     
 return 0;
 }
