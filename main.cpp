@@ -52,11 +52,10 @@ int arrayswap(int *array,int arraysize){
 
 void filter(int *arrayx, int xsize , int *arraya, int asize, int *arrayb, int bsize, int N)
 {   
-    //Send needed N step to be printed on inputs of function -/- make it more universal
-    //Move middle-step inside the function
     int arrayY[10];
     int arrayF[10];
     int Output[N+10];
+    std::fill(Output, Output+N+10, 0);
     int Y=0;
     int F=0;
     int r;
@@ -64,7 +63,7 @@ void filter(int *arrayx, int xsize , int *arraya, int asize, int *arrayb, int bs
     //BeginValues and Flags
     int BV_Asize=asize-1;
     int BV_Bsize=bsize-1;
-    int BV_A[BV_Asize]; //This array should be size of (a-1) cuz we use all of the a values for 0-values
+    int BV_A[BV_Asize]; 
     int BV_B[BV_Bsize];
     int ENDX, BV_AC , BV_BC;
 
@@ -81,46 +80,56 @@ void filter(int *arrayx, int xsize , int *arraya, int asize, int *arrayb, int bs
         throw std::invalid_argument("Input is not an integer"); 
     }
     
-
-    //Add bool for choise will we use values x(-1)
     for (r=0; r<N+1; r++) {
         if (N+1>xsize && (BV_AC != 1 || BV_BC != 1)){
           throw std::runtime_error("Stepsize >> arrayx");
         }
-        for (e=0; e<=r; e++) {
-            Y+=arraya[e]*arrayx[r-e] + BV_B[e]; //add 0-values as : a_0+arraya[e]*arrayx[r-e]
-            //printf("%i*%i + ",arraya[e],arrayx[r-e]);
-            if (r-e-1 >= 0) {
-                F+=arrayb[e]*Output[r-e-1] + BV_A[e];//add 0-values just as : b_0+arrayb[e]*arrayA[r-e-1]
-                //printf("%i*%i + ",arrayb[e],arrayA[r-e-1]);
-                }
-            if (r-e-1 < 0) {
-                F+=arrayb[e]*0 + BV_A[e];
-                //printf("%i*0 + ",arrayb[e]);
-            }
+        for (e=0; e<=r; e++){
+          if (e>asize-1 || ((r-e)<0 || (r-e)>=xsize)){
+            if (e>BV_Bsize-1){
+            Y+=0;}else{  
+          Y+=0 + BV_B[e];
+          }
+          }else{
+            if (e>BV_Bsize-1){ 
+            Y+=arraya[e]*arrayx[r-e];}else{  
+          Y+=arraya[e]*arrayx[r-e] + BV_B[e];
+          }
+          }
+          if (e>bsize || (r-e-1) < 0){
+            if (e>BV_Asize-1){
+              F+=0;}else{
+          F+=0 + BV_A[e];
+          }
+          }else{
+            if (e>BV_Asize-1){ 
+            F+=arrayb[e]*Output[r-e-1];
+            }else{
+          F+=arrayb[e]*Output[r-e-1] + BV_A[e];
+          }
+          }
         }
         arrayY[r]=Y+ENDX;
         arrayF[r]=F;
         Output[r]=arrayY[r]+arrayF[r];
-        //printf(" = %i\n",arrayA[r]);
         Y=0;
         F=0;
     }
 printf("output : [%i] \n",Output[N]);
-//Print only needed (N) value output of filter
 }
 
 
 int main(int argc, const char * argv[]) {
     int xsize = 10;
-    int arrayx[xsize]={1,4,3,5,6}; //send size of array to func
+    int arrayx[xsize]={1,4,3,5,6}; 
     int asize = 10;
     int arraya[asize]={1,3,-2,4};
     int bsize = 10;
     int arrayb[bsize]={4,-2,3};
     int i;
     int N = 2;
-
+    //*arraya=arrayswap(arraya,xsize+100);
+    //*arrayb=arrayswap(arrayb,xsize+100);
     int TypeN;
     
     printf("While answering the questions answer 1 if yes and 0 if no\n");
