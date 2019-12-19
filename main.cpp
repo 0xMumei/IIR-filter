@@ -50,39 +50,20 @@ int arrayswap(int *array,int arraysize){
   return *arraytemp;
 }
 
-void filter(int *arrayx, int xsize , int *arraya, int asize, int *arrayb, int bsize, int N)
+int filter(int *arrayx, int xsize , int *arraya, int asize, int *arrayb, int bsize, int N, int *BV_A, int BV_Asize, int *BV_B, int BV_Bsize, int BV_FLAG, int ENDX, long *Output)
 {   
     int arrayY[10];
     int arrayF[10];
-    int Output[N+10];
-    std::fill(Output, Output+N+10, 0);
+    int Result[N+10];
+    std::fill(Result, Result+N+10, 0);
     int Y=0;
     int F=0;
-    int r;
-    int e;
-    //BeginValues and Flags
-    int BV_Asize=asize-1;
-    int BV_Bsize=bsize-1;
-    int BV_A[BV_Asize]; 
-    int BV_B[BV_Bsize];
-    int ENDX, BV_AC , BV_BC;
-
-    printf("Enter values of BV_A?\n");
-    BV_AC=inputBV(BV_A,BV_Asize);
-
-    printf("Enter values of BV_B?\n");
-    BV_BC=inputBV(BV_B,BV_Bsize);
-
-    printf("Enter endvalue: ");
-        if(scanf("%i",&ENDX) == 1){
-    }
-    else{
-        throw std::invalid_argument("Input is not an integer"); 
-    }
+    int r,e;
     
     for (r=0; r<N+1; r++) {
-        if (N+1>xsize && (BV_AC != 1 || BV_BC != 1)){
-          throw std::runtime_error("Stepsize >> arrayx");
+        if ((N+1>xsize && BV_FLAG) !=0){
+          //throw std::runtime_error("Stepsize >> arrayx");
+          return 1;
         }
         for (e=0; e<=r; e++){
           if (e>asize-1 || ((r-e)<0 || (r-e)>=xsize)){
@@ -103,19 +84,20 @@ void filter(int *arrayx, int xsize , int *arraya, int asize, int *arrayb, int bs
           }
           }else{
             if (e>BV_Asize-1){ 
-            F+=arrayb[e]*Output[r-e-1];
+            F+=arrayb[e]*Result[r-e-1];
             }else{
-          F+=arrayb[e]*Output[r-e-1] + BV_A[e];
+          F+=arrayb[e]*Result[r-e-1] + BV_A[e];
           }
           }
         }
         arrayY[r]=Y+ENDX;
         arrayF[r]=F;
-        Output[r]=arrayY[r]+arrayF[r];
+        Result[r]=arrayY[r]+arrayF[r];
         Y=0;
         F=0;
     }
-printf("output : [%i] \n",Output[N]);
+*Output=Result[N];
+return 0;
 }
 
 
@@ -128,9 +110,41 @@ int main(int argc, const char * argv[]) {
     int arrayb[bsize]={4,-2,3};
     int i;
     int N = 2;
-    //*arraya=arrayswap(arraya,xsize+100);
-    //*arrayb=arrayswap(arrayb,xsize+100);
     int TypeN;
+
+    int BV_Asize=asize-1;
+    int BV_Bsize=bsize-1;
+    int BV_A[BV_Asize]; 
+    int BV_B[BV_Bsize];
+    int ENDX, BV_AC , BV_BC, BV_FLAG;
+
+    long Output;
+
+    printf ("Use Beginning Values?\n");
+    if(scanf("%i",&TypeN) == 1){
+    if (TypeN == 0){
+      BV_FLAG=0;
+      std::fill(BV_A, BV_A+BV_Asize, 0);
+      std::fill(BV_B, BV_B+BV_Bsize, 0);
+    }else{
+    BV_FLAG=1;
+    printf("Enter values of BV_A?\n");
+    BV_AC=inputBV(BV_A,BV_Asize);
+
+    printf("Enter values of BV_B?\n");
+    BV_BC=inputBV(BV_B,BV_Bsize);
+    }
+    }
+    else {
+       throw std::invalid_argument("Input is not an integer"); 
+    }
+
+    printf("Enter endvalue: ");
+        if(scanf("%i",&ENDX) == 1){
+    }
+    else{
+        throw std::invalid_argument("Input is not an integer"); 
+    }
     
     printf("While answering the questions answer 1 if yes and 0 if no\n");
 
@@ -163,8 +177,13 @@ int main(int argc, const char * argv[]) {
         throw std::invalid_argument("Input is not an integer"); 
     }
     
+    if (filter(arrayx, xsize, arraya, asize, arrayb, bsize, N, BV_A, BV_Asize, BV_B, BV_Bsize, BV_FLAG, ENDX, &Output) == 1){
+    printf("Error occured : code 1\n");
+    }else{
+    printf("Ok!\n");
+    }
 
-    filter(arrayx, xsize, arraya, asize, arrayb, bsize, N);
+    printf("Result : [ %d ] ",Output);
     
 return 0;
 }
