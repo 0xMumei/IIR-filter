@@ -181,9 +181,8 @@ int main(int argc, const char * argv[]) {
     printf("Error occured : code 1\n");
     }else{
     printf("Ok!\n");
-    }
-
     printf("Result : [ %d ] ",Output);
+    }
     
 return 0;
 }
